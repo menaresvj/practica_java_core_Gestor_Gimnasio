@@ -29,7 +29,9 @@ public class FitCoreGymV1 {
         gimnasio.agregarSocio(socioNuevo);
         Membresia membresiaNueva2 = new Membresia("anual", 300000, LocalDate.now());
         Socio socioNuevo2 = new Socio("Vegeta", "IV", 27, 22222222, membresiaNueva2);
-        gimnasio.agregarSocio(socioNuevo2);        
+        gimnasio.agregarSocio(socioNuevo2); 
+        Entrenador entrenador = new Entrenador(33333333, "Maestro", "Rochi", "Kamehameha");
+        gimnasio.agregarEntrenador(entrenador);
         
         // flujo principal
         System.out.println("Bienvenido a la app de VM. Gimnasio: " + gimnasio.getName() + ".");

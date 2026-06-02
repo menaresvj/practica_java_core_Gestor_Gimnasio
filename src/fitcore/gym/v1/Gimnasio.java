@@ -21,6 +21,7 @@ public class Gimnasio {
     int idEquipo = 0;
     ArrayList<Equipo> listaEquipos = new ArrayList<>();
     ArrayList<Socio> listaSocios = new ArrayList<>();
+    ArrayList<Entrenador> listaEntrenadores = new ArrayList<>();
 
     // constructores
     public Gimnasio() {
@@ -101,6 +102,10 @@ public class Gimnasio {
                     
                 case 2:
                     this.flujoMenuSocios();
+                    break;
+                    
+                case 3:
+                    flujoMenuEntrenadores();
                     break;
                     
                 case 4:
@@ -255,7 +260,7 @@ public class Gimnasio {
                     Membresia membresiaNueva = new Membresia(tipoMensualidad, precioMembresia, LocalDate.now());
                     Socio socioNuevo = new Socio(nombreSocio, apellidoSocio, edadSocio, rutSocio, membresiaNueva);
                     listaSocios.add(socioNuevo);
-                    System.out.println("Socio creado exitosamente.");
+                    System.out.println("Socio añadido exitosamente.");
                     break;
                     
                 case 2: // remover socio
@@ -307,6 +312,120 @@ public class Gimnasio {
         
     }
     
+    // ENTRENADORES
+    
+    public void listarEntrenadores() {
+        if (listaEntrenadores.isEmpty()) {
+            System.out.println("No se han registrado entrenadores.");
+        } else {
+            for (Entrenador entrenador : listaEntrenadores) {
+                System.out.println(entrenador);
+            }
+        }
+    }
+    
+    public Entrenador buscarEntrenadorRut(int rut) {
+        for (Entrenador entrenador : listaEntrenadores) {
+            if (rut == entrenador.getRut()) {
+                return entrenador;
+            }
+        }
+        return null;
+    }
+    
+    public void agregarEntrenador(Entrenador entrenador) {
+        this.listaEntrenadores.add(entrenador);
+    }
+    
+    public void imprimirMenuEntrenadores() {
+        System.out.println("");
+        System.out.println("---Menú Entrenadores---");
+        System.out.println("1.- Agregar entrenador");
+        System.out.println("2.- Remover entrenador");
+        System.out.println("3.- Asignar socio a un entrenador");
+        System.out.println("4.- Remover socio a un entrenador");
+        System.out.println("5.- Listar socios de un entrenador");
+        System.out.println("6.- Listar entrenadores y sus socios asignados");
+        System.out.println("0.- Volver al menú principal");
+    }
+    
+    public void flujoMenuEntrenadores() {
+        while (true) {
+            imprimirMenuEntrenadores();
+            int opcionME = escogerInt("Escoja una opción: ", 0, 6);
+            
+            switch (opcionME) {
+                case 0: // volver al menú principal
+                    return;
+                    
+                case 1: // agregar entrenador
+                    String nombreEntrenador = escogerString("Ingrese el nombre del nuevo entrenador: ", 2, 20);
+                    String apellidoEntrenador = escogerString("Ingrese el apellido del nuevo entrenador: ", 2, 20);
+                    int rutEntrenador = escogerInt("Ingrese el rut del nuevo entrenador: ", 10000000, 99999999);
+                    String especialidadEntrenador = escogerString("Ingrese la especialidad del nuevo entrenador: ", 5, 25);
+                    if (buscarEntrenadorRut(rutEntrenador) != null){
+                        System.out.println("Ya existe un entrenador con ese rut. Operación cancelada.");
+                        break;
+                    }
+                    Entrenador entrenadorNuevo = new Entrenador(rutEntrenador, nombreEntrenador, apellidoEntrenador, especialidadEntrenador);
+                    listaEntrenadores.add(entrenadorNuevo);
+                    System.out.println("Entrenador añadido exitosamente.");
+                    break;
+                    
+                case 2: // remover entrenador
+                    if (listaEntrenadores.isEmpty()) {
+                        System.out.println("No se han registrado entrenadores.");
+                        break;
+                    }
+                    int rutEntrenadorEliminar = escogerInt("Ingrese el rut del entrenador que desea eliminar: ", 10000000, 99999999);
+                    Entrenador entrenadorEliminar = buscarEntrenadorRut(rutEntrenadorEliminar);
+                    if (entrenadorEliminar == null) {
+                        System.out.println("No existe un entrenador con dicho rut. Operación cancelada.");
+                    } else {
+                        String confirmacionEliminar = escogerString("¿Desea eliminar el entrenador " + entrenadorEliminar.getNombre() + " " + entrenadorEliminar.getApellido() + "? Ingrese: S/N: ", 1, 2);
+                        if (confirmacionEliminar.equalsIgnoreCase("S") || confirmacionEliminar.equalsIgnoreCase("Si") || confirmacionEliminar.equalsIgnoreCase("Sí")) {
+                            this.listaEntrenadores.remove(entrenadorEliminar);
+                            System.out.println("El entrenador se ha eliminado exitosamente.");   
+                        } else {
+                            System.out.println("Operación cancelada.");
+                        }
+                    }
+                    break;
+                    
+                case 3: // asignar socio a un entrenador
+                    if (listaSocios.isEmpty() || listaEntrenadores.isEmpty()) {
+                        System.out.println("Primero debe contar con entrenadores y socios registrados. Operación cancelada.");
+                        break;
+                    }
+                    int rutEntrenadorAsignar = escogerInt("Ingrese el rut del entrenador al que desea asignarle un socio: ", 10000000, 99999999);
+                    Entrenador entrenadorAsignar = buscarEntrenadorRut(rutEntrenadorAsignar);
+                    if (entrenadorAsignar == null) {
+                        System.out.println("No existe un entrenador con dicho rut. Operación cancelada.");
+                        break;
+                    }   
+                    int rutSocioAsignar = escogerInt("Ingrese el rut del socio que desea asignarle al entrenador: ", 10000000, 99999999);
+                    Socio socioAsignar = buscarSocioRut(rutSocioAsignar);
+                    if (socioAsignar == null) {
+                        System.out.println("No existe un socio con dicho rut. Operación cancelada.");
+                        break;
+                    }
+                    String confirmacionAsignacion = escogerString("¿Desea asignar el socio " + socioAsignar.getNombre() + " " + socioAsignar.getApellido() + " al entrenador " + entrenadorAsignar.getNombre() + " " + entrenadorAsignar.getApellido() + "? Ingrese: S/N: ", 1, 2);
+                    if (confirmacionAsignacion.equalsIgnoreCase("S") || confirmacionAsignacion.equalsIgnoreCase("Si") || confirmacionAsignacion.equalsIgnoreCase("Sí")) {
+                        entrenadorAsignar.agregarSocio(socioAsignar);
+                        System.out.println("El socio se ha asignado exitosamente.");   
+                    } else {
+                        System.out.println("Operación cancelada.");
+                    }
+                    break;
+                    
+                case 6: // listar entrenadores y sus socios asignados
+                    listarEntrenadores();
+                    break;
+                    
+            }
+        }
+    }
+    
     
     // REPORTES
     
@@ -345,6 +464,10 @@ public class Gimnasio {
                     
                 case 2:
                     listarSocios();
+                    break;
+                    
+                case 3:
+                    listarEntrenadores();
                     break;
                     
                 case 4:
