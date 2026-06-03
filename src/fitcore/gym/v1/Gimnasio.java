@@ -232,6 +232,15 @@ public class Gimnasio {
         return null;
     }
     
+    public Socio buscarSocioRutEntrenador(int rut, Entrenador entrenador) {
+        for (Socio socio : entrenador.getSociosAsignados()) {
+            if (rut == socio.getRut()) {
+                return socio;
+            }
+        }
+        return null;
+    }
+    
     public void flujoMenuSocios() {
         while (true) {
             imprimirMenuSocios();
@@ -418,7 +427,60 @@ public class Gimnasio {
                     }
                     break;
                     
+                case 4: // remover socio a un entrenador
+                    if (listaSocios.isEmpty() || listaEntrenadores.isEmpty()) {
+                        System.out.println("Primero debe contar con entrenadores y socios registrados. Operación cancelada.");
+                        break;
+                    }
+                    int rutEntrenadorRemover = escogerInt("Ingrese el rut del entrenador al que desea removerle un socio: ", 10000000, 99999999);
+                    Entrenador entrenadorRemover = buscarEntrenadorRut(rutEntrenadorRemover);
+                    if (entrenadorRemover == null) {
+                        System.out.println("No existe un entrenador con dicho rut. Operación cancelada.");
+                        break;
+                    }
+                    System.out.println("El entrenador " + entrenadorRemover.getNombre() + " " + entrenadorRemover.getApellido() + " tiene los siguientes socios registrados: ");
+                    entrenadorRemover.listarSocios();  
+                    int rutSocioRemover = escogerInt("Ingrese el rut del socio que desea remover del entrenador: ", 10000000, 99999999);
+                    Socio socioRemover = buscarSocioRutEntrenador(rutSocioRemover, entrenadorRemover);
+                    if (socioRemover == null) {
+                        System.out.println("El entrenador no tiene ningún socio con el rut ingresado. Operación cancelada.");
+                        break;
+                    }
+                    String confirmacionEliminacion = escogerString("¿Desea remover el socio " + socioRemover.getNombre() + " " + socioRemover.getApellido() + " al entrenador " + entrenadorRemover.getNombre() + " " + entrenadorRemover.getApellido() + "? Ingrese: S/N: ", 1, 2);
+                    if (confirmacionEliminacion.equalsIgnoreCase("S") || confirmacionEliminacion.equalsIgnoreCase("Si") || confirmacionEliminacion.equalsIgnoreCase("Sí")) {
+                        entrenadorRemover.removerSocio(socioRemover);
+                        System.out.println("El socio se ha eliminado exitosamente.");   
+                    } else {
+                        System.out.println("Operación cancelada.");
+                    }
+                    break;
+                    
+                    
+                case 5: // listar socios de un entrenador
+                    if (listaSocios.isEmpty() || listaEntrenadores.isEmpty()) {
+                        System.out.println("Primero debe contar con entrenadores y socios registrados. Operación cancelada.");
+                        break;
+                    }
+                  int rutEntrenadorListar = escogerInt("Ingrese el rut del entrenador cuyos socios desea listar: ", 10000000, 99999999);
+                    Entrenador entrenadorListar = buscarEntrenadorRut(rutEntrenadorListar);
+                    if (entrenadorListar == null) {
+                        System.out.println("No existe un entrenador con dicho rut. Operación cancelada.");
+                        break;
+                    }
+                    if (entrenadorListar.getSociosAsignados().isEmpty()) {
+                        System.out.println("El entrenador " + entrenadorListar.getNombre() + " " + entrenadorListar.getApellido() + " no tiene socios registrados.");
+                    } else {
+                        System.out.println("El entrenador " + entrenadorListar.getNombre() + " " + entrenadorListar.getApellido() + " tiene los siguientes socios registrados: ");
+                        entrenadorListar.listarSocios();  
+                    }
+                    break;
+
+                    
                 case 6: // listar entrenadores y sus socios asignados
+                    if (listaEntrenadores.isEmpty()) {
+                        System.out.println("Primero debe contar con entrenadores registrados. Operación cancelada.");
+                        break;
+                    }
                     listarEntrenadores();
                     break;
                     

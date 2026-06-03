@@ -78,6 +78,10 @@ public class Entrenador {
         this.sociosAsignados.add(socio);
     }
     
+    public void removerSocio(Socio socio) {
+        sociosAsignados.remove(socio);
+    }
+    
     public void listarSocios() {
         for (Socio socio : sociosAsignados) {
             System.out.println(socio);
